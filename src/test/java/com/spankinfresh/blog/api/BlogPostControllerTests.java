@@ -15,16 +15,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class BlogPostControllerTests {
+
+    public static final String RESOURCE_URI = "/api/articles";
+
     @Test
     @DisplayName("Post returns status code CREATED")
     public void test01(@Autowired MockMvc mockMvc) throws Exception {
-        mockMvc.perform(post("/api/articles")).andExpect(status().isCreated());
+        mockMvc.perform(post(RESOURCE_URI)).andExpect(status().isCreated());
     }
 
     @Test
     @DisplayName("Post returns Location header")
     public void test02(@Autowired MockMvc mockMvc) throws Exception {
-        MvcResult result = mockMvc.perform(post("/api/articles")).andReturn();
+        MvcResult result = mockMvc.perform(post(RESOURCE_URI)).andReturn();
 
         assertEquals("http://localhost/api/articles/1", result.getResponse().getHeader("Location"));
     }
