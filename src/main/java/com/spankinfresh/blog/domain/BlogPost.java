@@ -1,10 +1,20 @@
 package com.spankinfresh.blog.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDateTime;
 
+@Entity
 public class BlogPost {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String category;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime datePosted;
     private String title;
     private String content;
