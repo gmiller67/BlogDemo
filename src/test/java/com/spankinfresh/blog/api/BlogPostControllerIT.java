@@ -12,8 +12,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BlogPostControllerIT {
@@ -47,6 +46,16 @@ public class BlogPostControllerIT {
         assertNotEquals(testPosting.getId(), actualPost.getId());
         assertEquals(String.format(RESOURCE_URI + "/%d", localServerPort, actualPost.getId()),
                 responseEntity.getHeaders().getLocation().toString());
+    }
+
+    @Test
+    @DisplayName("POST automatically adds datePosted")
+    public void test03() {
+        ResponseEntity<BlogPost> responseEntity =
+                this.restTemplate.postForEntity(String.format(RESOURCE_URI, localServerPort), testPosting, BlogPost.class);
+
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody().getDatePosted());
     }
 
 }

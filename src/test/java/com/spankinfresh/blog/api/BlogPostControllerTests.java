@@ -47,6 +47,8 @@ public class BlogPostControllerTests {
                 .andExpect(jsonPath("$.title").value(savedPosting.getTitle()))
                 .andExpect(jsonPath("$.category").value(savedPosting.getCategory()))
                 .andExpect(jsonPath("$.content").value(savedPosting.getContent()))
+// todo: is this really testing anything?
+//                .andExpect(jsonPath("$.datePosted").value(savedPosting.getDatePosted().toString()))
                 .andReturn();
 
         assertEquals(
