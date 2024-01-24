@@ -15,8 +15,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,7 +36,7 @@ public class BlogPostControllerTests {
     @Test
     @DisplayName("Post accepts and returns blog post representation")
     public void postCreatesNewBlogEntry(@Autowired MockMvc mockMvc) throws Exception {
-        when(mockRepository.save(any())).thenReturn(savedPosting);
+        when(mockRepository.save(refEq(testPosting, "datePosted"))).thenReturn(savedPosting);
         MockHttpServletRequestBuilder post = post(RESOURCE_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(testPosting));
@@ -54,5 +53,7 @@ public class BlogPostControllerTests {
         assertEquals(
                 String.format("http://localhost/api/articles/%d", savedPosting.getId()),
                 result.getResponse().getHeader("Location"));
+        verify(mockRepository, times(1)).save(refEq(testPosting, "datePosted"));
+        verifyNoMoreInteractions(mockRepository);
     }
 }
