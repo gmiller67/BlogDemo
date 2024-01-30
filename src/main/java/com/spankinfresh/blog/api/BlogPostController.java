@@ -50,4 +50,18 @@ public class BlogPostController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity<BlogPost> updateBlogEntry(@PathVariable Long id,
+                                                    @RequestBody BlogPost blogEntry) {
+        if (blogEntry.getId() != id) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
+        if (blogPostRepository.existsById(id)) {
+            blogPostRepository.save(blogEntry);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 }

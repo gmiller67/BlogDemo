@@ -21,8 +21,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -64,7 +63,8 @@ public class BlogPostControllerTests {
     @Test
     @DisplayName("T02 - When no articles exist, GET returns an empty list")
     public void test_02(@Autowired MockMvc mockMvc) throws Exception {
-        when(mockRepository.findAll()).thenReturn(new ArrayList()); 	mockMvc.perform(get(RESOURCE_URI))
+        when(mockRepository.findAll()).thenReturn(new ArrayList());
+        mockMvc.perform(get(RESOURCE_URI))
                 .andExpect(jsonPath("$.length()").value(0))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -75,16 +75,16 @@ public class BlogPostControllerTests {
     @Test
     @DisplayName("T03 - When one article exists, GET returns a list with it")
     public void test_03(@Autowired MockMvc mockMvc) throws Exception {
-        when(mockRepository.findAll()). thenReturn(Collections.singletonList(savedPosting));
+        when(mockRepository.findAll()).thenReturn(Collections.singletonList(savedPosting));
         mockMvc.perform(get(RESOURCE_URI))
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath( "$.[0].id").value(savedPosting.getId()))
+                .andExpect(jsonPath("$.[0].id").value(savedPosting.getId()))
                 .andExpect(jsonPath("$.[0].title").value(savedPosting.getTitle()))
                 .andExpect(jsonPath("$.[0].datePosted")
                         .value(savedPosting.getDatePosted().toString()))
-                .andExpect(jsonPath( "$.[0].category").value(savedPosting.getCategory()))
-                .andExpect( jsonPath("$.[0].content").value(savedPosting.getContent()))
+                .andExpect(jsonPath("$.[0].category").value(savedPosting.getCategory()))
+                .andExpect(jsonPath("$.[0].content").value(savedPosting.getContent()))
                 .andExpect(status().isOk());
         verify(mockRepository, times(1)).findAll();
         verifyNoMoreInteractions(mockRepository);
@@ -108,15 +108,55 @@ public class BlogPostControllerTests {
         mockMvc.perform(get(RESOURCE_URI + "/1"))
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath( "$.[0].id").value(savedPosting.getId()))
-                .andExpect(jsonPath( "$.[0].title").value(savedPosting.getTitle()))
+                .andExpect(jsonPath("$.[0].id").value(savedPosting.getId()))
+                .andExpect(jsonPath("$.[0].title").value(savedPosting.getTitle()))
                 .andExpect(jsonPath("$.[0].datePosted")
                         .value(savedPosting.getDatePosted().toString()))
-                .andExpect(jsonPath( "$.[0].category")
+                .andExpect(jsonPath("$.[0].category")
                         .value(savedPosting.getCategory()))
-                .andExpect( jsonPath("$.[0].content").value(savedPosting.getContent()))
+                .andExpect(jsonPath("$.[0].content").value(savedPosting.getContent()))
                 .andExpect(status().isOk());
         verify(mockRepository, times(1)).findById(anyLong());
+        verifyNoMoreInteractions(mockRepository);
+    }
+
+    @Test
+    @DisplayName("T06 - Article to be updated does not exist so PUT returns 404")
+    public void test_06(@Autowired MockMvc mockMvc) throws Exception {
+        when(mockRepository.existsById(10L)).thenReturn(false);
+        mockMvc.perform(put(RESOURCE_URI + "/10")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(
+                                new BlogPost(10L, "category", null, "title", "content"))))
+                .andExpect(status().isNotFound());
+        verify(mockRepository, never()).save(any(BlogPost.class));
+        verify(mockRepository, times(1)).existsById(10L);
+        verifyNoMoreInteractions(mockRepository);
+    }
+
+    @Test
+    @DisplayName("T07 - Article to be updated exists so PUT saves new copy")
+    public void test_07(@Autowired MockMvc mockMvc) throws Exception {
+        when(mockRepository.existsById(10L)).thenReturn(true);
+        mockMvc.perform(put(RESOURCE_URI + "/10")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(
+                                new BlogPost(10L, "category", null, "title", "content"))))
+                .andExpect(status().isNoContent());
+        verify(mockRepository, times(1)).save(any(BlogPost.class));
+        verify(mockRepository, times(1)).existsById(10L);
+        verifyNoMoreInteractions(mockRepository);
+    }
+
+    @Test
+    @DisplayName("T08 - ID in PUT URL not equal to one in request body")
+    public void test_08(@Autowired MockMvc mockMvc) throws Exception {
+        mockMvc.perform(put(RESOURCE_URI + "/100")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(
+                                new BlogPost(10L, "category", null, "title", "content"))))
+                .andExpect(status().isConflict());
+        verify(mockRepository, never()).save(any(BlogPost.class));
         verifyNoMoreInteractions(mockRepository);
     }
 
