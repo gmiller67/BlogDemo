@@ -14,14 +14,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -32,7 +33,7 @@ public class BlogPostControllerTests {
     private static final BlogPost testPosting =
             new BlogPost(0L, "category", null, "title", "content");
     private static final BlogPost savedPosting =
-            new BlogPost(1L, "category", null, "title", "content");
+            new BlogPost(1L, "category", LocalDateTime.now(), "title", "content");
     @MockBean
     private BlogPostRepository mockRepository;
 
@@ -49,8 +50,7 @@ public class BlogPostControllerTests {
                 .andExpect(jsonPath("$.title").value(savedPosting.getTitle()))
                 .andExpect(jsonPath("$.category").value(savedPosting.getCategory()))
                 .andExpect(jsonPath("$.content").value(savedPosting.getContent()))
-// todo: is this really testing anything?
-//                .andExpect(jsonPath("$.datePosted").value(savedPosting.getDatePosted().toString()))
+                .andExpect(jsonPath("$.datePosted").value(savedPosting.getDatePosted().toString()))
                 .andReturn();
 
         assertEquals(
@@ -61,18 +61,32 @@ public class BlogPostControllerTests {
     }
 
     @Test
-    @DisplayName("Get returns all blog posts")
-    public void getReturnsEntries(@Autowired MockMvc mockMvc) throws Exception {
-        ArrayList<BlogPost> entries = new ArrayList<>();
-        entries.add(savedPosting);
-        when(mockRepository.findAll()).thenReturn(entries);
-        MockHttpServletRequestBuilder get = get(RESOURCE_URI);
-        MvcResult result = mockMvc.perform(get)
-                .andExpect(status().isOk())
-                .andReturn();
-
-        assertEquals(
-                "[{\"id\":1,\"category\":\"category\",\"datePosted\":null,\"title\":\"title\",\"content\":\"content\"}]",
-                result.getResponse().getContentAsString());
+    @DisplayName("T02 - When no articles exist, GET returns an empty list")
+    public void test_02(@Autowired MockMvc mockMvc) throws Exception {
+        when(mockRepository.findAll()).thenReturn(new ArrayList()); 	mockMvc.perform(get(RESOURCE_URI))
+                .andExpect(jsonPath("$.length()").value(0))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        verify(mockRepository, times(1)).findAll();
+        verifyNoMoreInteractions(mockRepository);
     }
+
+    @Test
+    @DisplayName("T03 - When one article exists, GET returns a list with it")
+    public void test_03(@Autowired MockMvc mockMvc) throws Exception {
+        when(mockRepository.findAll()). thenReturn(Collections.singletonList(savedPosting));
+        mockMvc.perform(get(RESOURCE_URI))
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath( "$.[0].id").value(savedPosting.getId()))
+                .andExpect(jsonPath("$.[0].title").value(savedPosting.getTitle()))
+                .andExpect(jsonPath("$.[0].datePosted")
+                        .value(savedPosting.getDatePosted().toString()))
+                .andExpect(jsonPath( "$.[0].category").value(savedPosting.getCategory()))
+                .andExpect( jsonPath("$.[0].content").value(savedPosting.getContent()))
+                .andExpect(status().isOk());
+        verify(mockRepository, times(1)).findAll();
+        verifyNoMoreInteractions(mockRepository);
+    }
+
 }
