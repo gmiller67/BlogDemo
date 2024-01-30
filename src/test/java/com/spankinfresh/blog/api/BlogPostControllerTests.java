@@ -14,9 +14,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,5 +58,21 @@ public class BlogPostControllerTests {
                 result.getResponse().getHeader("Location"));
         verify(mockRepository, times(1)).save(refEq(testPosting, "datePosted"));
         verifyNoMoreInteractions(mockRepository);
+    }
+
+    @Test
+    @DisplayName("Get returns all blog posts")
+    public void getReturnsEntries(@Autowired MockMvc mockMvc) throws Exception {
+        ArrayList<BlogPost> entries = new ArrayList<>();
+        entries.add(savedPosting);
+        when(mockRepository.findAll()).thenReturn(entries);
+        MockHttpServletRequestBuilder get = get(RESOURCE_URI);
+        MvcResult result = mockMvc.perform(get)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertEquals(
+                "[{\"id\":1,\"category\":\"category\",\"datePosted\":null,\"title\":\"title\",\"content\":\"content\"}]",
+                result.getResponse().getContentAsString());
     }
 }
