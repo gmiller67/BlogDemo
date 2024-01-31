@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -88,6 +89,35 @@ public class BlogPostControllerTests {
                 .andExpect(status().isOk());
 
         verify(mockRepository, times(1)).findAll();
+        verifyNoMoreInteractions(mockRepository);
+    }
+
+    @Test
+    @DisplayName("GET by ID returns not found for invalid ID")
+    void getByIdReturnsNotFound(@Autowired MockMvc mockMvc) throws Exception {
+        when(mockRepository.findById(anyLong())).thenReturn(Optional.empty());
+        mockMvc.perform(get(RESOURCE_URI + "/1"))
+                .andExpect(status().isNotFound());
+
+        verify(mockRepository, times(1)).findById(anyLong());
+        verifyNoMoreInteractions(mockRepository);
+    }
+
+    @Test
+    @DisplayName("GET by ID returns a blog post")
+    void getByIdReturnsPost(@Autowired MockMvc mockMvc) throws Exception {
+        when(mockRepository.findById(anyLong())).thenReturn(Optional.of(savedPosting));
+        mockMvc.perform(get(RESOURCE_URI + "/1"))
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.[0].id").value(savedPosting.getId()))
+                .andExpect(jsonPath("$.[0].title").value(savedPosting.getTitle()))
+                .andExpect(jsonPath("$.[0].category").value(savedPosting.getCategory()))
+                .andExpect(jsonPath("$.[0].content").value(savedPosting.getContent()))
+                .andExpect(jsonPath("$.[0].datePosted").value(savedPosting.getDatePosted().toString()))
+                .andExpect(status().isOk());
+
+        verify(mockRepository, times(1)).findById(anyLong());
         verifyNoMoreInteractions(mockRepository);
     }
 }

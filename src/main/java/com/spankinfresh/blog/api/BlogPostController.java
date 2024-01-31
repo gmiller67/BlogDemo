@@ -10,6 +10,8 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/articles")
@@ -36,5 +38,14 @@ public class BlogPostController {
     @GetMapping
     public Iterable<BlogPost> getAllBlogEntries() {
         return blogPostRepository.findAll();
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<Iterable<BlogPost>> getBlogEntryById(@PathVariable Long id) {
+        Optional<BlogPost> blogEntry = blogPostRepository.findById(id);
+        if(blogEntry.isPresent()) {
+            return new ResponseEntity<>(Collections.singletonList(blogEntry.get()), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
