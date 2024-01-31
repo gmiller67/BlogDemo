@@ -21,8 +21,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -118,6 +119,47 @@ public class BlogPostControllerTests {
                 .andExpect(status().isOk());
 
         verify(mockRepository, times(1)).findById(anyLong());
+        verifyNoMoreInteractions(mockRepository);
+    }
+
+    @Test
+    @DisplayName("PUT by ID saves to database")
+    void putByIdSavesToDatabase(@Autowired MockMvc mockMvc) throws Exception {
+        when(mockRepository.existsById(anyLong())).thenReturn(true);
+        MockHttpServletRequestBuilder putRequest = put(RESOURCE_URI + "/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(new BlogPost(1L, "category", null, "title", "content")));
+        mockMvc.perform(putRequest)
+                .andExpect(status().isNoContent());
+
+        verify(mockRepository, times(1)).existsById(anyLong());
+        verify(mockRepository, times(1)).save(any(BlogPost.class));
+        verifyNoMoreInteractions(mockRepository);
+    }
+
+    @Test
+    @DisplayName("PUT by ID returns not found if not exists")
+    void putByIdReturnsNotFound(@Autowired MockMvc mockMvc) throws Exception {
+        when(mockRepository.existsById(anyLong())).thenReturn(false);
+        MockHttpServletRequestBuilder putRequest = put(RESOURCE_URI + "/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(new BlogPost(1L, "category", null, "title", "content")));
+        mockMvc.perform(putRequest)
+                .andExpect(status().isNotFound());
+
+        verify(mockRepository, times(1)).existsById(anyLong());
+        verifyNoMoreInteractions(mockRepository);
+    }
+
+    @Test
+    @DisplayName("PUT by ID returns conflict if URI ID does not match body ID")
+    void putByIdReturnsConflict(@Autowired MockMvc mockMvc) throws Exception {
+        MockHttpServletRequestBuilder putRequest = put(RESOURCE_URI + "/100")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(new BlogPost(1L, "category", null, "title", "content")));
+        mockMvc.perform(putRequest)
+                .andExpect(status().isConflict());
+
         verifyNoMoreInteractions(mockRepository);
     }
 }
