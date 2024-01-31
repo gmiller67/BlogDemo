@@ -34,7 +34,7 @@ public class BlogPostController {
     }
 
     @GetMapping
-    public Iterable<BlogPost> getBlogEntries() {
+    public Iterable<BlogPost> getAllBlogEntries() {
         return blogPostRepository.findAll();
     }
 }
