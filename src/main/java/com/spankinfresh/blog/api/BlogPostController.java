@@ -62,4 +62,14 @@ public class BlogPostController {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Iterable<BlogPost>> deleteBlogEntryById(@PathVariable Long id) {
+        Optional<BlogPost> blogEntry = blogPostRepository.findById(id);
+        if(blogEntry.isPresent()) {
+            blogPostRepository.delete(blogEntry.get());
+            return new ResponseEntity<>(Collections.singletonList(blogEntry.get()), HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }

@@ -21,9 +21,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -160,6 +158,29 @@ public class BlogPostControllerTests {
         mockMvc.perform(putRequest)
                 .andExpect(status().isConflict());
 
+        verifyNoMoreInteractions(mockRepository);
+    }
+
+    @Test
+    @DisplayName("DELETE by ID deletes from database")
+    void deleteByIdDeletes(@Autowired MockMvc mockMvc) throws Exception {
+        when(mockRepository.findById(anyLong())).thenReturn(Optional.of(savedPosting));
+        mockMvc.perform(delete(RESOURCE_URI + "/1"))
+                .andExpect(status().isNoContent());
+
+        verify(mockRepository, times(1)).findById(anyLong());
+        verify(mockRepository, times(1)).delete(any(BlogPost.class));
+        verifyNoMoreInteractions(mockRepository);
+    }
+
+    @Test
+    @DisplayName("DELETE by ID returns not found if not exists")
+    void deleteByIdReturnsNotFound(@Autowired MockMvc mockMvc) throws Exception {
+        when(mockRepository.findById(anyLong())).thenReturn(Optional.empty());
+        mockMvc.perform(delete(RESOURCE_URI + "/1"))
+                .andExpect(status().isNotFound());
+
+        verify(mockRepository, times(1)).findById(anyLong());
         verifyNoMoreInteractions(mockRepository);
     }
 }
