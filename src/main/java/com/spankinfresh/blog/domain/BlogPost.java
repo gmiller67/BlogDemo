@@ -1,9 +1,6 @@
 package com.spankinfresh.blog.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -26,16 +23,19 @@ public class BlogPost {
     @NotNull
     @Size(min = 1, max = 500000, message = "Content is required")
     private String content;
+    @ManyToOne
+    private Author author;
 
     public BlogPost() {
     }
 
-    public BlogPost(long id, String category, LocalDateTime datePosted, String title, String content) {
+    public BlogPost(long id, String category, LocalDateTime datePosted, String title, String content, Author author) {
         this.id = id;
         this.category = category;
         this.datePosted = datePosted;
         this.title = title;
         this.content = content;
+        this.author = author;
     }
 
     public long getId() {
@@ -78,14 +78,23 @@ public class BlogPost {
         this.content = content;
     }
 
+    public Author getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
+
     @Override
     public String toString() {
         return "BlogPost{" +
                 "id=" + id +
-                ", category='" + category + '\'' +
                 ", datePosted=" + datePosted +
+                ", category='" + category + '\'' +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
+                ", author=" + author +
                 '}';
     }
 }

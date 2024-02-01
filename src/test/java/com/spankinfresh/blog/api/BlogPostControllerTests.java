@@ -2,6 +2,7 @@ package com.spankinfresh.blog.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spankinfresh.blog.data.BlogPostRepository;
+import com.spankinfresh.blog.domain.Author;
 import com.spankinfresh.blog.domain.BlogPost;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,17 +31,18 @@ public class BlogPostControllerTests {
 
     public static final String RESOURCE_URI = "/api/articles";
     private final ObjectMapper mapper = new ObjectMapper();
+    private static final Author savedAuthor = new Author(1L, "first", "last", "email@cscc.edu");
     private static final BlogPost testPosting =
-            new BlogPost(0L, "category", null, "title", "content");
+            new BlogPost(0L, "category", null, "title", "content", savedAuthor);
     private static final BlogPost savedPosting =
-            new BlogPost(1L, "category", LocalDateTime.now(), "title", "content");
+            new BlogPost(1L, "category", LocalDateTime.now(), "title", "content", savedAuthor);
     @MockBean
     private BlogPostRepository mockRepository;
 
     @Test
     @DisplayName("Post accepts and returns blog post representation")
     public void postCreatesNewBlogEntry(@Autowired MockMvc mockMvc) throws Exception {
-        when(mockRepository.save(refEq(testPosting, "datePosted"))).thenReturn(savedPosting);
+        when(mockRepository.save(refEq(testPosting, "datePosted", "author"))).thenReturn(savedPosting);
         MockHttpServletRequestBuilder post = post(RESOURCE_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(testPosting));
@@ -56,7 +58,7 @@ public class BlogPostControllerTests {
         assertEquals(
                 String.format("http://localhost/api/articles/%d", savedPosting.getId()),
                 result.getResponse().getHeader("Location"));
-        verify(mockRepository, times(1)).save(refEq(testPosting, "datePosted"));
+        verify(mockRepository, times(1)).save(refEq(testPosting, "datePosted", "author"));
         verifyNoMoreInteractions(mockRepository);
     }
 
@@ -81,7 +83,7 @@ public class BlogPostControllerTests {
     public void postReturns400ForLength(@Autowired MockMvc mockMvc) throws Exception {
         MockHttpServletRequestBuilder post = post(RESOURCE_URI)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new BlogPost(0L, "", null, "", "")));
+                .content(mapper.writeValueAsString(new BlogPost(0L, "", null, "", "", savedAuthor)));
         mockMvc.perform(post)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.fieldErrors.category").value("Please enter a category name of up to 200 characters"))
@@ -158,7 +160,7 @@ public class BlogPostControllerTests {
         when(mockRepository.existsById(anyLong())).thenReturn(true);
         MockHttpServletRequestBuilder putRequest = put(RESOURCE_URI + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new BlogPost(1L, "category", null, "title", "content")));
+                .content(mapper.writeValueAsString(new BlogPost(1L, "category", null, "title", "content", savedAuthor)));
         mockMvc.perform(putRequest)
                 .andExpect(status().isNoContent());
 
@@ -173,7 +175,7 @@ public class BlogPostControllerTests {
         when(mockRepository.existsById(anyLong())).thenReturn(false);
         MockHttpServletRequestBuilder putRequest = put(RESOURCE_URI + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new BlogPost(1L, "category", null, "title", "content")));
+                .content(mapper.writeValueAsString(new BlogPost(1L, "category", null, "title", "content", savedAuthor)));
         mockMvc.perform(putRequest)
                 .andExpect(status().isNotFound());
 
@@ -186,7 +188,7 @@ public class BlogPostControllerTests {
     void putByIdReturnsConflict(@Autowired MockMvc mockMvc) throws Exception {
         MockHttpServletRequestBuilder putRequest = put(RESOURCE_URI + "/100")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new BlogPost(1L, "category", null, "title", "content")));
+                .content(mapper.writeValueAsString(new BlogPost(1L, "category", null, "title", "content", savedAuthor)));
         mockMvc.perform(putRequest)
                 .andExpect(status().isConflict());
 
