@@ -10,8 +10,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -23,8 +21,6 @@ public class BlogPostControllerIT {
     private static final String RESOURCE_URI = "http://localhost:%d/api/articles";
     private static final BlogPost testPosting =
             new BlogPost(0L, "category", null, "title", "content");
-    private static final BlogPost savedPosting =
-            new BlogPost(1L, "category", LocalDateTime.now(), "title", "content");
 
     @Test
     @DisplayName("POST Location includes server port")
