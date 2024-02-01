@@ -61,6 +61,38 @@ public class BlogPostControllerTests {
     }
 
     @Test
+    @DisplayName("Post returns 400 if required properties are not set")
+    public void postReturns400MissingFields(@Autowired MockMvc mockMvc) throws Exception {
+        MockHttpServletRequestBuilder post = post(RESOURCE_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(new BlogPost()));
+        mockMvc.perform(post)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.fieldErrors.category").value("must not be null"))
+                .andExpect(jsonPath("$.fieldErrors.title").value("must not be null"))
+                .andExpect(jsonPath("$.fieldErrors.content").value("must not be null"))
+                .andReturn();
+
+        verifyNoInteractions(mockRepository);
+    }
+
+    @Test
+    @DisplayName("Post returns 400 if required properties are not the right length")
+    public void postReturns400ForLength(@Autowired MockMvc mockMvc) throws Exception {
+        MockHttpServletRequestBuilder post = post(RESOURCE_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(new BlogPost(0L, "", null, "", "")));
+        mockMvc.perform(post)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.fieldErrors.category").value("Please enter a category name of up to 200 characters"))
+                .andExpect(jsonPath("$.fieldErrors.title").value("Please enter a title up to 200 characters in length"))
+                .andExpect(jsonPath("$.fieldErrors.content").value("Content is required"))
+                .andReturn();
+
+        verifyNoInteractions(mockRepository);
+    }
+
+    @Test
     @DisplayName("GET all returns empty list if no posts")
     void getAllReturnsNoPosts(@Autowired MockMvc mockMvc) throws Exception {
         when(mockRepository.findAll()).thenReturn(new ArrayList<>());

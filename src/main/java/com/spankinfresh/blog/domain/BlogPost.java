@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -13,10 +15,16 @@ public class BlogPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String category;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime datePosted;
+    @NotNull
+    @Size(min = 1, max = 200, message = "Please enter a category name of up to 200 characters")
+    private String category;
+    @NotNull
+    @Size(min = 1, max = 200, message = "Please enter a title up to 200 characters in length")
     private String title;
+    @NotNull
+    @Size(min = 1, max = 500000, message = "Content is required")
     private String content;
 
     public BlogPost() {

@@ -2,6 +2,7 @@ package com.spankinfresh.blog.api;
 
 import com.spankinfresh.blog.data.BlogPostRepository;
 import com.spankinfresh.blog.domain.BlogPost;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class BlogPostController {
 
     @PostMapping
     public ResponseEntity<BlogPost> createBlogEntry(
-            @RequestBody BlogPost blogPost, UriComponentsBuilder uriComponentsBuilder) {
+            @Valid @RequestBody BlogPost blogPost, UriComponentsBuilder uriComponentsBuilder) {
         blogPost.setDatePosted(LocalDateTime.now());
         BlogPost savedPost = blogPostRepository.save(blogPost);
 
