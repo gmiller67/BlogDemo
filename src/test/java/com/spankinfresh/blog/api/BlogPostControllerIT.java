@@ -20,7 +20,7 @@ public class BlogPostControllerIT {
     private TestRestTemplate restTemplate;
     private static final String RESOURCE_URI = "http://localhost:%d/api/articles";
     private static final BlogPost testPosting =
-            new BlogPost(0L, "category", null, "title", "content");
+            new BlogPost(0L, "category", null, "title", "content", null);
 
     @Test
     @DisplayName("POST Location includes server port")
