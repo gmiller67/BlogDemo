@@ -63,7 +63,7 @@ public class AuthorControllerTests {
     public void postReturns400MissingFields(@Autowired MockMvc mockMvc) throws Exception {
         MockHttpServletRequestBuilder post = post(RESOURCE_URI)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(new Author()));
+                .content(mapper.writeValueAsString(new Author(0L, null, null, null)));
         mockMvc.perform(post)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.fieldErrors.firstName").value("must not be null"))

@@ -12,7 +12,7 @@ import jakarta.validation.constraints.Size;
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @NotNull
     @Size(min = 1, max = 80, message = "First name should be between 1 and 80 characters")
     private String firstName;
