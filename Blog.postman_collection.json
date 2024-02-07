@@ -22,7 +22,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"id\": 0,\n    \"category\": \"category\",\n    \"datePosted\": null,\n    \"title\": \"title\",\n    \"content\": \"content\",\n    \"author\": {\n    \t\"id\": 2,\n    \t\"firstName\": \"greg\",\n    \t\"lastName\": \"hazen\",\n    \t\"emailAddress\": \"ghazen@cscc.edu\"\n    }\n}",
+							"raw": "{\n    \"id\": 0,\n    \"category\": \"category\",\n    \"datePosted\": null,\n    \"title\": \"title\",\n    \"content\": \"content\",\n    \"author\": {\n    \t\"id\": 1,\n    \t\"firstName\": \"greg\",\n    \t\"lastName\": \"hazen\",\n    \t\"emailAddress\": \"ghazen@cscc.edu\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -58,6 +58,27 @@
 							"port": "3000",
 							"path": [
 								"api",
+								"articles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Article Summary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/summary/articles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"summary",
 								"articles"
 							]
 						}
