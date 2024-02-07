@@ -86,6 +86,53 @@
 					"response": []
 				},
 				{
+					"name": "GET Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/categories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Posts by Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/articles/category?categoryName=category",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"articles",
+								"category"
+							],
+							"query": [
+								{
+									"key": "categoryName",
+									"value": "category"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "PUT blog entry update",
 					"request": {
 						"method": "PUT",
