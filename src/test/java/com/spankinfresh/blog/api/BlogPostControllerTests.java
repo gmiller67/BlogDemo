@@ -232,4 +232,27 @@ public class BlogPostControllerTests {
                         HttpHeaders.VARY,
                         hasItems("Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers")));
     }
+
+    @Test
+    @DisplayName("T14 - Get by category name returns expected data")
+    public void test_14 (@Autowired MockMvc mockMvc) throws Exception {
+        when(mockRepository.findByCategoryOrderByDatePostedDesc("foo"))
+                .thenReturn(Collections.singletonList(savedPosting));
+
+        MockHttpServletRequestBuilder get = get(RESOURCE_URI + "/category")
+                .param("categoryName", "foo");
+        mockMvc.perform(get)
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.[0].id").value(savedPosting.getId()))
+                .andExpect(jsonPath("$.[0].title").value(savedPosting.getTitle()))
+                .andExpect(jsonPath("$.[0].datePosted").value(savedPosting.getDatePosted().toString()))
+                .andExpect(jsonPath("$.[0].category").value(savedPosting.getCategory()))
+                .andExpect(jsonPath("$.[0].content").value(savedPosting.getContent()))
+                .andExpect(status().isOk());
+
+        verify(mockRepository, times(1)).findByCategoryOrderByDatePostedDesc("foo");
+        verifyNoMoreInteractions(mockRepository);
+    }
+
 }

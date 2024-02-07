@@ -2,6 +2,7 @@ package com.spankinfresh.blog.api;
 
 import com.spankinfresh.blog.data.BlogPostJdbcTemplateRepository;
 import com.spankinfresh.blog.domain.BlogPost;
+import com.spankinfresh.blog.domain.Category;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,5 +20,10 @@ public class ContentController {
     @GetMapping("/api/summary/articles")
     public List<BlogPost> getAll() {
         return blogPostJdbcTemplateRepository.getAllBlogPostingsOmittingContent();
+    }
+
+    @GetMapping("/api/categories")
+    public List<Category> getAllCategories() {
+        return blogPostJdbcTemplateRepository.getCategoryList();
     }
 }

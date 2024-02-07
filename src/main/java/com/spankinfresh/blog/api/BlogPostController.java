@@ -12,6 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -39,6 +40,11 @@ public class BlogPostController {
     @GetMapping
     public Iterable<BlogPost> getAllBlogEntries() {
         return blogPostRepository.findAll();
+    }
+
+    @GetMapping("/category")
+    List<BlogPost> getAllBlogPostsByCategory(@RequestParam("categoryName") String categoryName){
+        return blogPostRepository.findByCategoryOrderByDatePostedDesc(categoryName);
     }
 
     @GetMapping("{id}")

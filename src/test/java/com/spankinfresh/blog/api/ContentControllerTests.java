@@ -2,6 +2,7 @@ package com.spankinfresh.blog.api;
 
 import com.spankinfresh.blog.data.BlogPostJdbcTemplateRepository;
 import com.spankinfresh.blog.domain.BlogPost;
+import com.spankinfresh.blog.domain.Category;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,4 +39,19 @@ public class ContentControllerTests {
       verify(mockRepository, times(1)).getAllBlogPostingsOmittingContent();
       verifyNoMoreInteractions(mockRepository);
    }
+
+   @Test
+   @DisplayName("T02 - Get categories returns data ")
+   public void test_02(@Autowired MockMvc mockMvc) throws Exception {
+      when(mockRepository.getCategoryList()).thenReturn(Collections.singletonList(new Category()));
+
+      mockMvc.perform(get("/api/categories"))
+              .andExpect(jsonPath("$.length()").value(1))
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(status().isOk());
+
+      verify(mockRepository, times(1)).getCategoryList();
+      verifyNoMoreInteractions(mockRepository);
+   }
+
 }
