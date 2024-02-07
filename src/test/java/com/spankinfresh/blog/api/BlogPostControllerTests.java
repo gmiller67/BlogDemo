@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.hasItems;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -218,5 +220,16 @@ public class BlogPostControllerTests {
 
         verify(mockRepository, times(1)).findById(anyLong());
         verifyNoMoreInteractions(mockRepository);
+    }
+
+    @Test
+    @DisplayName("T13 - Get requests have proper CORS headers")
+    public void test_13 (@Autowired MockMvc mockMvc) throws Exception {
+        when(mockRepository.findAll()).thenReturn(Collections.singletonList(savedPosting));
+        mockMvc.perform(get(RESOURCE_URI))
+                .andExpect(status().isOk())
+                .andExpect(header().stringValues(
+                        HttpHeaders.VARY,
+                        hasItems("Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers")));
     }
 }
