@@ -30,12 +30,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/articles",
+							"raw": "http://localhost:3000/api/articles",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "3000",
 							"path": [
 								"api",
 								"articles"
@@ -50,12 +50,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/articles",
+							"raw": "http://localhost:3000/api/articles",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "3000",
 							"path": [
 								"api",
 								"articles"
@@ -86,12 +86,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/articles/2",
+							"raw": "http://localhost:3000/api/articles/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "3000",
 							"path": [
 								"api",
 								"articles",
@@ -107,12 +107,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/articles/1",
+							"raw": "http://localhost:3000/api/articles/1",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "3000",
 							"path": [
 								"api",
 								"articles",
@@ -128,12 +128,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/articles/3",
+							"raw": "http://localhost:3000/api/articles/3",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "3000",
 							"path": [
 								"api",
 								"articles",
@@ -171,12 +171,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/authors",
+							"raw": "http://localhost:3000/api/authors",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "3000",
 							"path": [
 								"api",
 								"authors"
@@ -191,12 +191,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/authors",
+							"raw": "http://localhost:3000/api/authors",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "3000",
 							"path": [
 								"api",
 								"authors"
@@ -227,12 +227,12 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/authors/2",
+							"raw": "http://localhost:3000/api/authors/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "3000",
 							"path": [
 								"api",
 								"authors",
@@ -248,12 +248,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/authors/2",
+							"raw": "http://localhost:3000/api/authors/2",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "3000",
 							"path": [
 								"api",
 								"authors",
@@ -269,12 +269,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/authors/3",
+							"raw": "http://localhost:3000/api/authors/3",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "3000",
 							"path": [
 								"api",
 								"authors",
