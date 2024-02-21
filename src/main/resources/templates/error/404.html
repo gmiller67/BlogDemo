@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="base :: common_header(~{::title})">
+  <title>SpankinFresh Farmers Market &mdash; Item Not Found</title>
+</head>
+<body>
+<div class="container">
+  <div  class="row" th:include="base :: top-menu"></div>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="jumbotron">
+        <h1 class="display-4">Item not found</h1>
+        <p class="lead">We are sorry, but the item you are looking for is sold out!</p>
+        <img src="/pexels-kate-trifo-4019401.jpg" alt="Almost empty grocery store shelf" class="img-fluid mb-2">
+        <p>Please choose from the top menu or the list of recent articles to the right.</p>
+        <hr class="my-4">
+        <p>Photo by Kate Trifo from Pexels</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div th:include="base :: right-rail"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div th:include="base :: footer"></div>
+    </div>
+  </div>
+</div>
+<div th:replace="base :: script"></div>
+</body>
+</html>

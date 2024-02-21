@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="base :: common_header(~{::title})">
+  <title>All Articles &mdash; SpankinFresh Farmers Market</title>
+</head>
+<body>
+<div class="container">
+  <div  class="row" th:include="base :: top-menu"></div>
+  <div class="row">
+    <div class="col-md-8">
+      <h2 class="mt-3 ml-2">All Articles</h2>
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">Category</th>
+          <th scope="col">Date Posted</th>
+          <th scope="col">Title</th>
+          <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="article : ${articlesList}">
+          <td><span th:text="${article.category}">Cool Category</span></td>
+          <td><span th:if="${article.datePosted}" th:text=
+            "${{article.datePosted}}">Jan 1, 2020</span></td>
+          <td><a th:href="@{/article/{articleId}(articleId=${article.id})}"><span th:text="${article.title}">Simpson</span></a></td>
+        </tr>
+        </tbody>
+      </table>
+      <p class="lead text-center">
+        <router-link class="btn btn-outline-primary btn-lg" :to="{ name: 'edit-article', params: { id: 0 } }">Create a New Article</router-link>
+      </p>
+    </div>
+    <div class="col-md-4">
+      <div th:include="base :: right-rail"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div th:include="base :: footer"></div>
+    </div>
+  </div>
+</div>
+<div th:replace="base :: script"></div>
+</body>
+</html>

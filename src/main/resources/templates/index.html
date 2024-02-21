@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="base :: common_header(~{::title})">
+  <title th:text="${pageTitle} ? ${pageTitle} + ' &mdash; SpankinFresh Farmers Market' :
+  'Welcome to SpankinFresh Farmers Market'">SpankinFresh Farmers Market &mdash; Welcome!</title>
+</head>
+<body>
+<div class="container">
+  <div  class="row" th:include="base :: top-menu"></div>
+  <div class="row">
+    <div class="col-md-8">
+      <h1>Welcome to the SpankinFresh Blog!</h1>
+      <h2 th:if="${categoryName}" th:text=
+        "${{categoryName}}">Category Name</h2>
+      <div class="card bg-light mb-3"
+        th:each="article : ${articles}">
+        <h2 class="card-header"
+          th:text="${article.title}">Article title</h2>
+        <p class="card-text mx-3 mt-1">
+      <span th:if="${article.datePosted}" th:text=
+        "${{article.datePosted}}">Jan 1, 2020</span>
+          in <span th:text="${article.category}">Cool Category</span>
+        </p>
+        <p class="card-text mx-3"><strong>
+          By <span th:text="${article.author.firstName}">Homer</span>
+          <span th:text="${article.author.lastName}">Simpson</span>
+        </strong>
+        </p>
+        <div class="mx-3 mb-3">
+        <span th:utext="${markdownFormatter.markdownToHtml(article.content)}">
+        Awesome Content!</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="col-md-4">
+      <div th:include="base :: right-rail"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div th:include="base :: footer"></div>
+    </div>
+  </div>
+</div>
+<div th:replace="base :: script"></div>
+</body>
+</html>
